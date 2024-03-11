@@ -1,7 +1,7 @@
 import pygame as pg
 
 
-mini_map = [
+custom_map = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,1,1,1,1,0,0,0,0,1,0,0,0,1],
@@ -22,7 +22,8 @@ mini_map = [
 class Map:
     def __init__(self,game) -> None:
         self.game = game
-        self.mini_map = mini_map
+        self.mini_map = custom_map
+        self.custom_map = custom_map
         self.world_map = {}
         self.name = "Default"
         self.get_map()

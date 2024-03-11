@@ -48,6 +48,7 @@ class Tcp_Server:
             
             if connected != False:
                 if datatype == "lobbiesrequest":
+                    print(f"[{address}] has requested lobbies...")
                     lobbies = list(self.server_manager.lobbies.keys())
                     temp = "lobbies:"
                     if len(lobbies) != 0:
@@ -64,6 +65,7 @@ class Tcp_Server:
                         self.server_manager.clients[address]["connection"].send(temp.encode("utf-8"))
 
                 elif datatype == "asktojoin":
+                    print(f"[{address}] has joined {data}...")
                     self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]].remove(address)
                     if len(self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]) == 0:
                         del self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]
@@ -79,6 +81,7 @@ class Tcp_Server:
                             times += 1
 
                 elif datatype == "leavelobby":
+                    print(f"[{address}] has left {data}...")
                     self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]].remove(address)
                     for ip_address in self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]:
                         self.server_manager.clients[ip_address]["connection"].send(f"playerleave:{self.server_manager.clients[address]["name"]}".encode("utf-8"))
@@ -87,6 +90,7 @@ class Tcp_Server:
                     self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]["mapname"] = data
 
                 elif datatype == "maplayout":
+                    print(f"[{address}] has sent map...")
                     self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]["maplayout"] = data
 
                 elif datatype == "mapsize":
@@ -97,6 +101,7 @@ class Tcp_Server:
                     self.server_manager.lobbies[self.server_manager.clients[address]["lobby"]]["maplayout"] = temp
 
                 elif datatype == "playerinfo":
+                    print(f"[{address}] has sent in player data...")
                     name,x,y,health = data.split(",")
                     try:
                         self.server_manager.lobbies[name]

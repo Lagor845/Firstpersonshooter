@@ -30,6 +30,17 @@ class Network_Handler:
                 mini_map.append(row.split(","))
             self.game.map.mini_map = mini_map
         
+        elif datatype == "mapsize":
+            amount_of_times = data / 2048
+            temp = ""
+            for time in range(amount_of_times):
+                temp += self.server.recv(2048).decode("utf-8")
+            rows = temp.split("/")
+            mini_map = []
+            for row in rows:
+                mini_map.append(row.split(","))
+            self.game.map.mini_map = mini_map
+
         elif datatype == "requestmap":
             self.send_map()
 
@@ -92,13 +103,14 @@ class Network_Handler:
         self.send_map_name()
         temp = "maplayout:"
         first = True
-        for row in self.game.map.mini_map:
+        for row in self.game.map.custom_map:
             for item in row:
                 if first == True:
                     temp = f"{temp}{str(item)}"
                     first = False
                 else:
                     temp = f"{temp},{str(item)}"
+            temp = f"{temp}/"
         msg = temp.encode("utf-8")
         if len(msg) > 2048:
             self.tcp_server.send(f"mapsize:{str(len(msg))}".encode("utf-8"))

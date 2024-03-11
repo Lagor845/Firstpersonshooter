@@ -1,7 +1,8 @@
 import math
+import socket
 
 #Screen
-RESOLUTION = WIDTH, HEIGHT = 1600,900
+RESOLUTION = WIDTH, HEIGHT = 1920,1080
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
 FPS = 0
@@ -27,5 +28,5 @@ SCREEN_DIST = HALF_WIDTH / math.tan(HALF_FOV)
 SCALE = WIDTH // NUM_RAYS
 
 #Networking
-SERVER_IP = "192.168.86.218"
+SERVER_IP = socket.gethostbyname(socket.gethostname())
 PORT = 9999

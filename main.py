@@ -4,6 +4,8 @@ from settings import *
 from map import *
 from player import *
 from raycasting import *
+from network import *
+from main_menu import *
 
 class Game:
     def __init__(self) -> None:
@@ -12,16 +14,21 @@ class Game:
         self.clock = pg.time.Clock()
         self.delta_time = 1
         self.started = False
+        self.location = "Main_menu"
+        self.main_menu = Main_Menu(self)
+        self.map_open = False
         self.new_game()
         
     def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
         self.raycasting = Raycasting(self)
+        self.network_handler = Network_Handler(self)
     
     def update(self):
-        self.player.update()
-        self.raycasting.update()
+        if self.location == "In_game":
+            self.player.update()
+            self.raycasting.update()
         pg.display.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"FPS: {self.clock.get_fps()}")
@@ -32,26 +39,52 @@ class Game:
     
     def draw(self):
         self.screen.fill('black')
-        self.draw_background()
-        """
-        self.map.draw()
-        self.player.draw()
-        """
+        if self.location == "Main_menu":
+            self.main_menu.draw()
+        elif self.location == "In_game" and self.map_open == True:
+            self.map.draw()
+            self.player.draw()
+        elif self.location == "In_game":
+            self.draw_background()
         
     def check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
+                self.quit()
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    pg.quit()
-                    sys.exit()
+                    if self.location == "Main_menu":
+                        self.quit()
+                    elif self.location == "Settings":
+                        self.location = "Main_menu"
+                    elif self.location == "Other_Lobby":
+                        self.location = "Lobby"
+                    elif self.location == "Lobby":
+                        self.location = "Main_menu"
                 
                 if event.key == pg.K_r:
                     self.player.x , self.player.y = PLAYER_POS
                     self.player.angle = 0
-        
+
+                if event.key == pg.K_m:
+                    if self.location == "In_game" and self.map_open == False:
+                        self.map_open = True
+                    else:
+                        self.map_open = False
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if self.location == "Main_menu":
+                    if self.main_menu.start_button.rect.collidepoint(pg.mouse.get_pos()):
+                        self.location = "Lobby"
+                    elif self.main_menu.settings_button.rect.collidepoint(pg.mouse.get_pos()):
+                        self.location = "Settings"
+                    elif self.main_menu.quit_button.rect.collidepoint(pg.mouse.get_pos()):
+                        self.quit()
+    
+    def quit(self):
+        pg.quit()
+        sys.exit()
+
     def run(self):
         while True:
             self.check_events()
