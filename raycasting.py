@@ -10,6 +10,19 @@ class Raycasting:
         ox,oy = self.game.player.pos
         x_map,y_map = self.game.player.map_pos
         ray_angle = self.game.player.angle - HALF_FOV + 0.0001
+        
+        # 3d lists
+        self.color_list = []
+        self.ray_list = []
+        self.height_list = []
+        
+        #2d lists
+        self.ox_list = []
+        self.oy_list = []
+        self.depth_list = []
+        self.cos_a_list = []
+        self.sin_a_list = []
+        
         for ray in range(NUM_RAYS):
             sin_a = math.sin(ray_angle)
             cos_a = math.cos(ray_angle)
@@ -53,16 +66,32 @@ class Raycasting:
             else:
                 depth = depth_hor
 
-            #pg.draw.line(self.game.screen,'yellow',(100 * ox,100* oy),(100*ox+100 * depth * cos_a,100*oy+100 * depth * sin_a),2)
+            self.ox_list.append(ox)
+            self.oy_list.append(oy)
+            self.depth_list.append(depth)
+            self.cos_a_list.append(cos_a)
+            self.sin_a_list.append(sin_a)
+            # pg.draw.line(self.game.screen,'yellow',(100 * ox,100* oy),(100*ox+100 * depth * cos_a,100*oy+100 * depth * sin_a),2)
             
             depth *= math.cos(self.game.player.angle - ray_angle)
 
             proj_height = SCREEN_DIST / (depth + 0.0001)
 
             color = [255 / (1 + depth ** 6 * 0.00002)] * 3
-
-            pg.draw.rect(self.game.screen,color,(ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
+            
+            self.height_list.append(proj_height)
+            self.color_list.append(color)
+            self.ray_list.append(ray)
+            # pg.draw.rect(self.game.screen,color,(ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
             ray_angle += DELTA_ANGLE
 
     def update(self):
         self.ray_cast()
+    
+    def draw(self):
+        for stuff in range(len(self.ray_list)):
+            pg.draw.rect(self.game.screen,self.color_list[stuff],(self.ray_list[stuff] * SCALE, HALF_HEIGHT - self.height_list[stuff] // 2, SCALE, self.height_list[stuff]))
+            
+    def draw_map(self):
+        for stuff in range(len(self.ox_list)):
+            pg.draw.line(self.game.screen,'yellow',(self.game.map.distance * self.ox_list[stuff],self.game.map.distance* self.oy_list[stuff]),(self.game.map.distance*self.ox_list[stuff]+self.game.map.distance * self.depth_list[stuff] * self.cos_a_list[stuff],self.game.map.distance*self.oy_list[stuff]+self.game.map.distance * self.depth_list[stuff] * self.sin_a_list[stuff]),2)

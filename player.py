@@ -59,7 +59,7 @@ class Player:
             self.y += dy
         
     def draw(self):
-        pg.draw.circle(self.game.screen,'green', (self.x * 100, self.y * 100),10)
+        pg.draw.circle(self.game.screen,'green', (self.x * self.game.map.distance, self.y * self.game.map.distance),10)
         
     def update(self):
         self.movement()

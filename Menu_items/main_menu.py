@@ -15,3 +15,11 @@ class Main_Menu:
         self.start_button.update(self.game.screen,self.screen_width/2,self.screen_height/1.8)
         self.settings_button.update(self.game.screen,self.screen_width/2,self.screen_height/1.5)
         self.quit_button.update(self.game.screen,self.screen_width/2,self.screen_height/1.3)
+
+    def get_mouse_input(self):
+        if self.start_button.rect.collidepoint(pg.mouse.get_pos()):
+            self.game.location = "Lobby"
+        elif self.settings_button.rect.collidepoint(pg.mouse.get_pos()):
+            self.game.location = "Settings"
+        elif self.quit_button.rect.collidepoint(pg.mouse.get_pos()):
+            self.game.quit()

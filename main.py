@@ -5,7 +5,8 @@ from map import *
 from player import *
 from raycasting import *
 from network import *
-from main_menu import *
+from Menu_items.main_menu import *
+from Menu_items.settings_menu import *
 
 class Game:
     def __init__(self) -> None:
@@ -14,8 +15,9 @@ class Game:
         self.clock = pg.time.Clock()
         self.delta_time = 1
         self.started = False
-        self.location = "Main_menu"
+        self.location = "In_game"
         self.main_menu = Main_Menu(self)
+        self.settings_menu = Settings_menu(self)
         self.map_open = False
         self.new_game()
         
@@ -24,7 +26,7 @@ class Game:
         self.player = Player(self)
         self.raycasting = Raycasting(self)
         self.network_handler = Network_Handler(self)
-    
+
     def update(self):
         if self.location == "In_game":
             self.player.update()
@@ -32,20 +34,30 @@ class Game:
         pg.display.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"FPS: {self.clock.get_fps()}")
-    
+
     def draw_background(self):
         pg.draw.rect(self.screen,(0,50,0),(0,HALF_HEIGHT,WIDTH,HEIGHT))
         pg.draw.rect(self.screen,(0,0,20),pg.Rect(0,0,WIDTH,HALF_HEIGHT))
-    
+
+    def draw_map(self):
+        self.map.draw()
+        self.player.draw()
+        self.raycasting.draw_map()
+
     def draw(self):
         self.screen.fill('black')
         if self.location == "Main_menu":
             self.main_menu.draw()
+            
+        elif self.location == "Settings":
+            self.settings_menu.draw()
+            
         elif self.location == "In_game" and self.map_open == True:
-            self.map.draw()
-            self.player.draw()
+            self.draw_map()
+            
         elif self.location == "In_game":
             self.draw_background()
+            self.raycasting.draw()
         
     def check_events(self):
         for event in pg.event.get():
@@ -74,12 +86,10 @@ class Game:
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.location == "Main_menu":
-                    if self.main_menu.start_button.rect.collidepoint(pg.mouse.get_pos()):
-                        self.location = "Lobby"
-                    elif self.main_menu.settings_button.rect.collidepoint(pg.mouse.get_pos()):
-                        self.location = "Settings"
-                    elif self.main_menu.quit_button.rect.collidepoint(pg.mouse.get_pos()):
-                        self.quit()
+                    self.main_menu.get_mouse_input()
+                
+                elif self.location == "Settings":
+                    self.settings_menu.get_mouse_input()
     
     def quit(self):
         pg.quit()

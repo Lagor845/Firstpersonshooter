@@ -26,7 +26,14 @@ class Map:
         self.custom_map = custom_map
         self.world_map = {}
         self.name = "Default"
+        self.calculate_distance()
         self.get_map()
+        
+    def calculate_distance(self):
+        if len(self.mini_map[0]) < len(self.mini_map):
+            self.distance = self.game.screen.get_width() / len(self.mini_map[0])
+        else:
+            self.distance = self.game.screen.get_height() / len(self.mini_map)
     
     def get_map(self):
         for j, row in enumerate(self.mini_map):
@@ -35,5 +42,5 @@ class Map:
                     self.world_map[(i,j)] = value
                     
     def draw(self):
-        [pg.draw.rect(self.game.screen,'darkgrey',(pos[0] * 100,pos[1] * 100,100,100),2)
-        for pos in self.world_map]
+        for pos in self.world_map:
+            pg.draw.rect(self.game.screen,'darkgrey',(pos[0] * self.distance,pos[1] * self.distance,self.distance,self.distance),2)

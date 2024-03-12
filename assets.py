@@ -17,7 +17,7 @@ class Text:
     
     def update(self,screen,x,y):
         font = pygame.font.Font('freesansbold.ttf', self.font_size)
-        self.text_structure = font.render(self.text, True, self.text_color,"red")
+        self.text_structure = font.render(self.text, True, self.text_color)
         self.rect = self.text_structure.get_rect()
         self.rect.center = (x,y)
         screen.blit(self.text_structure,self.rect)
