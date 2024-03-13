@@ -11,12 +11,16 @@ class Network_Handler:
         self.players = {}
         self.current_lobby = None
         self.create_lobby_event = False
+        self.connected = False
 
     # TCP SERVER MESSAGES
+    def search_for_server(self):
+        threading.Thread(target=self.initial_tcp_connect).start()
+        
     def initial_tcp_connect(self):
         if self.tcp_server.connect_ex((SERVER_IP,PORT)) == 0:
-            return True
-        return False
+            self.connected = True
+        self.connected = "Failed"
 
     def recv_tcp(self):
         datatype,data = self.tcp_server.recv(2048).decode("utf-8").split(":")
