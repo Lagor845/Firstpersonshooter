@@ -11,6 +11,7 @@ class Main_Menu:
         self.settings_button = Text("Settings",40,self.colors.white)
         self.quit_button = Text("Quit",40,self.colors.white)
         self.image = pygame.image.load("Assets/Imgs/Title_page.jpg").convert()
+        self.image = pg.transform.scale(self.image,(self.screen_width,self.screen_height))
 
     def draw(self):
         self.game.screen.blit(self.image,(0,0))

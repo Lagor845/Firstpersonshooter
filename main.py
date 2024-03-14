@@ -9,23 +9,24 @@ from Hud import *
 from Menu_items.main_menu import *
 from Menu_items.settings_menu import *
 from Menu_items.lobby import *
-from Assets.assets import Sounds
+from Assets.assets import *
 
 class Game:
     def __init__(self) -> None:
         pg.init()
-        self.screen = pg.display.set_mode(RESOLUTION,pg.HWSURFACE | pg.DOUBLEBUF)
+        self.screen = pg.display.set_mode(RESOLUTION,pg.FULLSCREEN,pg.HWSURFACE | pg.DOUBLEBUF)
         self.fullscreen = False
         self.clock = pg.time.Clock()
         self.delta_time = 1
         self.started = False
-        self.location = "In_game"
+        self.location = "Main_menu"
         self.main_menu = Main_Menu(self)
         self.settings_menu = Settings_menu(self)
         self.lobby = Lobby(self)
         self.sound = Sounds(self)
         self.map_open = False
         self.pause_menu_open = False
+        self.game_time = 5 * 60 # 5 is the number of minutes while 60 is turning it into seconds
         self.new_game()
 
     def new_game(self):
@@ -43,7 +44,6 @@ class Game:
             self.raycasting.update()
         pg.display.update()
         self.delta_time = self.clock.tick(FPS)
-        pg.display.set_caption(f"FPS: {self.clock.get_fps()}")
 
     def draw_background(self):
         pg.draw.rect(self.screen,(0,50,0),(0,HALF_HEIGHT,WIDTH,HEIGHT))
@@ -88,6 +88,13 @@ class Game:
             self.raycasting.draw()
             self.hud.draw()
 
+        if self.settings_menu.Show_fps == True:
+            font = pygame.font.Font('freesansbold.ttf', 20)
+            text_structure = font.render(f"{int(self.clock.get_fps())}", True, Colors().white)
+            rect = text_structure.get_rect()
+            rect.center = (self.screen.get_width()/30,self.screen.get_height()/20)
+            self.screen.blit(text_structure,rect)
+
     def check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -127,12 +134,23 @@ class Game:
                 
                 elif self.location == "Lobby":
                     self.lobby.get_mouse_input()
-
+                
+                elif self.location == "In_game" and self.pause_menu_open == True:
+                    self.hud.get_mouse_input()
                 self.sound.select_sound()
+    
+    def leave_game(self):
+        self.sound.stop_in_game_music()
+        self.location = "Main_menu"
+        self.player = Player(self)
 
     def quit(self):
         pg.quit()
         sys.exit()
+
+    def start_game(self):
+        self.sound.stop_menu_music()
+        self.location = "In_game"
 
     def run(self):
         while True:
