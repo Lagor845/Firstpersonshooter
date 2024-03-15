@@ -1,11 +1,13 @@
-import socket 
+import socket
 import threading
 from settings import *
+import pygame as pg
 
 class Network_Handler:
     def __init__(self,game) -> None:
         self.game = game
         self.udp_server = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.udp_server.bind((SERVER_IP,PORT))
         self.tcp_server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.lobbies = []
         self.players = {}
@@ -124,3 +126,22 @@ class Network_Handler:
     def sendpos(self,pos):
         msg = f"pos:{pos[0]},{pos[1]}".encode("utf-8")
         self.udp_server.sendto(msg,(SERVER_IP,PORT))
+    
+    def recv_udp(self):
+        msg,addr = self.udp_server.recvfrom(2048)
+        datatype,data = msg.split(":")
+        if datatype == "pos":
+            player_name,pos_string = data.split("/")
+            x,y = pos_string.split(",")
+            self.players[player_name]["posx"] = float(x)
+            self.players[player_name]["posy"] = float(y)
+    
+    # Draw both
+    def draw(self,operation):
+        if operation == "map":
+            for player in self.players:
+                pg.draw.circle(self.game.screen,'green', (player["posx"] * self.game.map.distance, player["posy"] * self.game.map.distance),10)
+        
+        elif operation == "3d":
+            for player in self.players:
+                pass

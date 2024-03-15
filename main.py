@@ -16,20 +16,20 @@ class Game:
         pg.init()
         self.screen = pg.display.set_mode(RESOLUTION,pg.FULLSCREEN,pg.HWSURFACE | pg.DOUBLEBUF)
         self.fullscreen = False
-        self.clock = pg.time.Clock()
-        self.delta_time = 1
         self.started = False
+        self.map_open = False
+        self.pause_menu_open = False
+        self.delta_time = 1
+        self.game_timer = 5 * 60 # 5 is the number of minutes while 60 is turning it into seconds
         self.location = "Main_menu"
+        self.clock = pg.time.Clock()
+        self.import_classes()
+
+    def import_classes(self):
         self.main_menu = Main_Menu(self)
         self.settings_menu = Settings_menu(self)
         self.lobby = Lobby(self)
         self.sound = Sounds(self)
-        self.map_open = False
-        self.pause_menu_open = False
-        self.game_time = 5 * 60 # 5 is the number of minutes while 60 is turning it into seconds
-        self.new_game()
-
-    def new_game(self):
         self.hud = Hud(self)
         self.map = Map(self)
         self.player = Player(self)
@@ -46,7 +46,7 @@ class Game:
         self.delta_time = self.clock.tick(FPS)
 
     def draw_background(self):
-        pg.draw.rect(self.screen,(0,50,0),(0,HALF_HEIGHT,WIDTH,HEIGHT))
+        #pg.draw.rect(self.screen,(0,50,0),(0,HALF_HEIGHT,WIDTH,HEIGHT))
         pg.draw.rect(self.screen,(0,0,20),pg.Rect(0,0,WIDTH,HALF_HEIGHT))
 
     def draw_map(self):
@@ -76,6 +76,7 @@ class Game:
             self.raycasting.draw()
             self.hud.draw_pause_menu()
             pg.mouse.set_visible(1)
+            self.network_handler.draw("map")
 
         elif self.location == "In_game" and self.map_open == True:
             pg.mouse.set_pos(self.screen.get_width()/2,self.screen.get_height()/2)
@@ -87,6 +88,7 @@ class Game:
             self.draw_background()
             self.raycasting.draw()
             self.hud.draw()
+            self.network_handler.draw("3d")
 
         if self.settings_menu.Show_fps == True:
             font = pygame.font.Font('freesansbold.ttf', 20)

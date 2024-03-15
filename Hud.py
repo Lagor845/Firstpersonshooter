@@ -8,11 +8,14 @@ class Hud:
         self.colors = Colors()
         self.screen_width = self.game.screen.get_width()
         self.screen_height = self.game.screen.get_height()
+        self.pause_menu_area = "main"
+
+        # Health Bar
         self.health_bar_width = self.screen_width / 4
         self.health_bar_height = self.screen_height/ 15
         self.health_bar_x = self.game.screen.get_width() / 15
         self.health_bar_y = self.game.screen.get_height() / 1.2
-        self.pause_menu_area = "main"
+
         # Main area
         self.paused_text = Text("Paused",80,self.colors.white)
         self.resume_button = Text("Resume",40,self.colors.white)

@@ -17,6 +17,6 @@ class Lobby:
     def get_mouse_input(self):
         if self.start_button.rect.collidepoint(pg.mouse.get_pos()):
             self.game.start_game()
-            print("worked")
+
         elif self.back_button.rect.collidepoint(pg.mouse.get_pos()):
             self.game.location = "Main_menu"

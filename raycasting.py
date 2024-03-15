@@ -60,7 +60,7 @@ class Raycasting:
                 y_vert += dy
 
                 depth_vert += delta_depth
-            
+
             if depth_hor > depth_vert:
                 depth = depth_vert
             else:
@@ -75,7 +75,10 @@ class Raycasting:
             
             depth *= math.cos(self.game.player.angle - ray_angle)
 
-            proj_height = SCREEN_DIST / (depth + 0.0001)
+            if depth >= MAX_DEPTH:
+                proj_height = 0
+            else:
+                proj_height = SCREEN_DIST / (depth + 0.0001)
 
             color = [255 / (1 + depth ** 6 * 0.00002)] * 3
             
