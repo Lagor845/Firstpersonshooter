@@ -14,6 +14,7 @@ class Settings_menu:
         self.fullscreen_button = Text("Fullscreen",40,self.colors.white)
         self.mouse_key_control_button = Text("Mouse",40,self.colors.white)
         self.fps_button = Text("Show FPS",40,self.colors.white)
+        self.volume_slider = Slider(self.game,self.screen_width/2,self.screen_height/2.8,self.screen_width/15,self.screen_height/30,self.screen_width/15,self.screen_height/30,)
         self.Show_fps = True
 
     def draw(self):
@@ -21,6 +22,7 @@ class Settings_menu:
         self.fullscreen_button.update(self.game.screen,self.screen_width/2,self.screen_height/1.5)
         self.mouse_key_control_button.update(self.game.screen,self.screen_width/2,self.screen_height/1.8)
         self.fps_button.update(self.game.screen,self.screen_width/2,self.screen_height/2.2)
+        self.volume_slider.draw()
 
     def get_mouse_input(self):
         if self.back_button.rect.collidepoint(pg.mouse.get_pos()):

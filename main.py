@@ -19,6 +19,7 @@ class Game:
         self.started = False
         self.map_open = False
         self.pause_menu_open = False
+        self.mouse_down = False
         self.delta_time = 1
         self.game_timer = 5 * 60 # 5 is the number of minutes while 60 is turning it into seconds
         self.location = "Main_menu"
@@ -140,6 +141,14 @@ class Game:
                 elif self.location == "In_game" and self.pause_menu_open == True:
                     self.hud.get_mouse_input()
                 self.sound.select_sound()
+                self.mouse_down = True
+
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.mouse_down = False
+                
+            if self.mouse_down == True:
+                if self.location == "Settings":
+                    self.settings_menu.volume_slider.mouse_input()
     
     def leave_game(self):
         self.sound.stop_in_game_music()

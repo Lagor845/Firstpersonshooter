@@ -1,4 +1,5 @@
 import pygame
+import pygame as pg
 
 class Colors:
     def __init__(self) -> None:
@@ -54,3 +55,43 @@ class Sounds:
     def stop_in_game_music(self):
         pygame.mixer_music.stop()
         self.battle_music_started = False
+        
+class Slider:
+    def __init__(self,game,centerx,centery,input_rect_width,input_rect_height,out_width,out_height,low_value = 0,high_value = 100,current_value = 100) -> None:
+        self.game = game
+        
+        self.low_value = low_value
+        self.high_value = high_value
+        self.current_value = current_value
+        
+        self.input_rect = pg.Rect(0,0,0,0)
+        self.input_rect.centerx = centerx
+        self.input_rect.centery = centery
+        self.input_rect.width = input_rect_width
+        self.input_rect.height = input_rect_height
+        print(f"centerx: {centerx}, rectcenterx: {self.input_rect.centerx}")
+        
+        self.out_rect = pg.Rect(0,0,0,0)
+        self.out_rect.centerx = centerx
+        self.out_rect.centery = centery
+        self.out_rect.width = out_width
+        self.out_rect.height = out_height
+        
+        
+    def calculate_value(self):
+        value = (self.out_rect.right - self.input_rect.centerx) / (self.out_rect.right - self.out_rect.left)
+        print(value)
+        
+    
+    def draw(self):
+        pg.draw.rect(self.game.screen,"gray",self.out_rect)
+        pg.draw.rect(self.game.screen,"red",self.input_rect)
+    
+    def mouse_input(self):
+        if self.input_rect.collidepoint(pg.mouse.get_pos()):
+            self.input_rect.centerx = pg.mouse.get_pos()[0]
+            if self.input_rect.centerx >= self.out_rect.right:
+                self.input_rect.centerx = self.out_rect.right
+            if self.input_rect.centerx <= self.out_rect.left:
+                self.input_rect.centerx = self.out_rect.left
+            self.calculate_value()
